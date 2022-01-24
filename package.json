@@ -11,7 +11,7 @@
     "facing": "ts-node src/facing.ts"
   },
   "dependencies": {
-    "big.js": "^6.1.1"
+    "big.js": "6.1.1"
   },
   "devDependencies": {
     "@types/big.js": "6.1.2",
