@@ -1,6 +1,6 @@
 # Generate files
-.gcode
-.nc
+*.gcode
+*.nc
 
 # OS Specific
 .DS_Store
