@@ -109,6 +109,8 @@ export class Operation<PropsType extends OperationProps> {
       fileNameWithExtension += '.gcode';
     }
 
+    // TODO: Investigate replace createWriteStream with writeFile since we already have all
+    // the data in memory
     const writeStream = createWriteStream(fileNameWithExtension);
 
     for (const line of this.gcode) {
