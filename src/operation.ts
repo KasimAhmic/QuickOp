@@ -86,8 +86,8 @@ export class Operation<PropsType extends OperationProps> {
   calculateStats(): Operation<PropsType> {
     this.stats.totalLines = this.gcode.length;
     this.stats.sizeInBytes = Buffer.byteLength(this.gcode.join('\n'));
-    this.stats.sizeInKiloBytes = parseFloat((this.stats.sizeInBytes / 1024).toFixed(2));
-    this.stats.sizeInMegaBytes = parseFloat((this.stats.sizeInKiloBytes / 1024).toFixed(2));
+    this.stats.sizeInKiloBytes = this.stats.sizeInBytes / 1024;
+    this.stats.sizeInMegaBytes = this.stats.sizeInKiloBytes / 1024;
 
     this.logger.table(
       ['Description', 'Value'],
