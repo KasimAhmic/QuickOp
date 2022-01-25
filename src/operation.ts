@@ -21,9 +21,12 @@ export interface Stats {
   sizeInBytes: number;
   sizeInKiloBytes: number;
   sizeInMegaBytes: number;
+  startTime: bigint;
+  endTime: bigint;
+  elapsedTime: number;
 }
 
-export class Operation<PropsType extends OperationProps> {
+export abstract class Operation<PropsType extends OperationProps> {
   protected readonly widthOfCut: number;
   protected readonly depthOfCut: number;
   protected readonly toolDiameter: number;
@@ -66,11 +69,22 @@ export class Operation<PropsType extends OperationProps> {
       sizeInBytes: 0,
       sizeInKiloBytes: 0,
       sizeInMegaBytes: 0,
+      startTime: 0n,
+      endTime: 0n,
+      elapsedTime: 0,
     };
   }
 
+  protected abstract generator(): Operation<OperationProps>;
+
   generate(): Operation<PropsType> {
-    throw new Error('Method not implemented.');
+    this.stats.startTime = process.hrtime.bigint();
+
+    this.generator();
+
+    this.stats.endTime = process.hrtime.bigint();
+
+    return this;
   }
 
   addCommand(...args: string[]): void {
@@ -88,6 +102,7 @@ export class Operation<PropsType extends OperationProps> {
     this.stats.sizeInBytes = Buffer.byteLength(this.gcode.join('\n'));
     this.stats.sizeInKiloBytes = this.stats.sizeInBytes / 1024;
     this.stats.sizeInMegaBytes = this.stats.sizeInKiloBytes / 1024;
+    this.stats.elapsedTime = Number(this.stats.endTime - this.stats.startTime) / 1e9;
 
     this.logger.table(
       ['Description', 'Value'],
@@ -97,6 +112,7 @@ export class Operation<PropsType extends OperationProps> {
       ['Size in Bytes', this.stats.sizeInBytes],
       ['Size in Kilobytes', this.stats.sizeInKiloBytes.toFixed(2)],
       ['Size in Megabytes', this.stats.sizeInMegaBytes.toFixed(2)],
+      ['Elapsed Time (sec)', this.stats.elapsedTime.toFixed(3)],
     );
 
     return this;
