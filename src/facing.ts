@@ -18,7 +18,7 @@ export class FacingOperation extends Operation<FacingOperationProps> {
     this.cutBothWays = props.cutBothWays;
   }
 
-  generate(): FacingOperation {
+  protected generator(): FacingOperation {
     this.logger.log('Generating Facing GCODE...');
 
     const { G0, X, Y, Z, F } = setup(this);
@@ -66,6 +66,10 @@ export class FacingOperation extends Operation<FacingOperationProps> {
         }
       }
 
+      this.zPosition = Big(5);
+
+      this.addCommand(G0, Z(), F(this.plungeFeedRate));
+
       this.addComment('Facing Operation Complete');
     }
 
@@ -88,7 +92,7 @@ const t = new FacingOperation({
   travelFeedRate: 2400,
   plungeFeedRate: 200,
   leadInFeedRate: 200,
-  zPasses: 1,
+  zPasses: 2,
   cutBothWays: true,
 });
 
