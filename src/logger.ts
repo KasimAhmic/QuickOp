@@ -1,9 +1,9 @@
-export type LogLevel = 'DEBUG' | 'LOG' | 'WARN' | 'ERROR';
-export type Message = string | number | boolean;
-export type TableHeaders = (string | number)[];
-export type TableRow = (string | number)[][];
+type LogLevel = 'DEBUG' | 'LOG' | 'WARN' | 'ERROR' | 'NONE';
+type Message = string | number | boolean;
+type TableHeaders = (string | number)[];
+type TableRows = (string | number)[][];
 
-export interface Colors {
+interface Colors {
   black: string;
   red: string;
   green: string;
@@ -15,14 +15,15 @@ export interface Colors {
   reset: string;
 }
 
-export type Color = keyof Colors;
+type Color = keyof Colors;
 
 export class Logger {
-  private readonly logerName: string;
+  private readonly loggerName: string;
   private readonly colors: Colors;
+  private readonly noop = () => {};
 
-  constructor(logerName: string, disableColors: boolean = false) {
-    this.logerName = logerName;
+  constructor(loggerName: string, disableColors: boolean = false, logLevel: LogLevel = 'LOG') {
+    this.loggerName = loggerName;
     this.colors = {
       black: '\u001b[30m',
       red: '\u001b[31m',
@@ -38,13 +39,46 @@ export class Logger {
     if (disableColors) {
       Object.keys(this.colors).forEach((color: Color) => (this.colors[color] = ''));
     }
+
+    switch (logLevel) {
+      case 'LOG':
+        this.debug = this.noop;
+        break;
+      case 'WARN':
+        this.debug = this.noop;
+        this.log = this.noop;
+        this.table = this.noop;
+        break;
+      case 'ERROR':
+        this.debug = this.noop;
+        this.log = this.noop;
+        this.table = this.noop;
+        this.warn = this.noop;
+        break;
+      case 'NONE':
+        this.debug = this.noop;
+        this.log = this.noop;
+        this.table = this.noop;
+        this.warn = this.noop;
+        this.error = this.noop;
+        break;
+    }
   }
 
   private write(logLevel: LogLevel, msg: Message, color: Color) {
+    // Application name
     const quickOp = `${this.colors.green}[QuickOp]${this.colors.reset}`;
+
+    // Current date and time
     const date = new Date().toLocaleString();
+
+    // Log level
     const level = `${this.colors[color]}[ ${logLevel.padEnd(5)} ]${this.colors.reset}`;
-    const loggerName = `${this.colors.yellow}[${this.logerName}]${this.colors.reset}`;
+
+    // Name of the Operation class that called the logger
+    const loggerName = `${this.colors.yellow}[${this.loggerName}]${this.colors.reset}`;
+
+    // Message to log
     const message = `${this.colors[color]}${msg}${this.colors.reset}`;
 
     process.stdout.write(`${quickOp} ${date} ${level} ${loggerName} - ${message}\n`);
@@ -66,7 +100,7 @@ export class Logger {
     this.write('ERROR', msg, 'red');
   }
 
-  table(tableHeaders: TableHeaders, ...tableRows: TableRow) {
+  table(tableHeaders: TableHeaders, ...tableRows: TableRows) {
     const headerSizes = tableHeaders.map((header) => header.toString().length);
     let cellSizes: number[] = [];
 
