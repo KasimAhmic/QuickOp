@@ -8,6 +8,7 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "scripts": {
+    "pre-commit": "lint-staged",
     "facing": "ts-node src/facing.ts",
     "spiral-facing": "ts-node src/spiral-facing.ts"
   },
@@ -16,8 +17,12 @@
     "decimal.js": "^10.3.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^16.1.0",
+    "@commitlint/config-conventional": "^16.0.0",
     "@types/big.js": "6.1.2",
     "@types/node": "^17.0.10",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.2",
     "prettier": "^2.5.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5"
@@ -37,5 +42,14 @@
     "rules": {
       "no-unused-vars": "error"
     }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.+(js|json|ts|tsx)": "eslint",
+    "src/**/*.+(js,css,md,ts,tsx)": "prettier --write"
   }
 }
