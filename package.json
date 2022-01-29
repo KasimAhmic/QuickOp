@@ -8,10 +8,12 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "scripts": {
-    "facing": "ts-node src/facing.ts"
+    "facing": "ts-node src/facing.ts",
+    "spiral-facing": "ts-node src/spiral-facing.ts"
   },
   "dependencies": {
-    "big.js": "6.1.1"
+    "big.js": "6.1.1",
+    "decimal.js": "^10.3.1"
   },
   "devDependencies": {
     "@types/big.js": "6.1.2",
