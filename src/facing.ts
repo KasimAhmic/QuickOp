@@ -1,4 +1,4 @@
-import Big from 'big.js';
+import Decimal from 'decimal.js';
 import { Operation, OperationProps } from './operation';
 import { setup } from './util';
 
@@ -28,45 +28,45 @@ export class FacingOperation extends Operation<FacingOperationProps> {
     for (let zPass = 1; zPass <= this.zPasses; zPass++) {
       let xPasses = 1;
 
-      this.xPosition = Big(this.stock.width).add(this.toolDiameter);
-      this.yPosition = Big(-this.toolDiameter);
-      this.zPosition = Big(5);
+      this.xPosition = new Decimal(this.stock.width).add(this.toolDiameter);
+      this.yPosition = new Decimal(-this.toolDiameter);
+      this.zPosition = new Decimal(5);
 
       this.addCommand(G0, X(), Y(), Z(), F(this.travelFeedRate));
 
-      this.zPosition = Big(-this.depthOfCut).mul(zPass);
+      this.zPosition = new Decimal(-this.depthOfCut).mul(zPass);
 
       this.addCommand(G0, Z(), F(this.plungeFeedRate));
 
       while (xPasses * this.widthOfCut < this.stock.depth + this.toolDiameter) {
-        this.yPosition = Big(xPasses).mul(this.widthOfCut);
+        this.yPosition = new Decimal(xPasses).mul(this.widthOfCut);
 
         this.addCommand(G0, Y(), F(this.leadInFeedRate));
 
-        this.xPosition = Big(-this.toolDiameter);
+        this.xPosition = new Decimal(-this.toolDiameter);
 
         this.addCommand(G0, X(), F(this.cuttingFeedRate));
 
         xPasses++;
 
         if (this.cutBothWays) {
-          this.yPosition = Big(xPasses).mul(this.widthOfCut);
+          this.yPosition = new Decimal(xPasses).mul(this.widthOfCut);
 
           this.addCommand(G0, Y(), F(this.leadInFeedRate));
 
-          this.xPosition = Big(this.stock.width).add(this.toolDiameter);
+          this.xPosition = new Decimal(this.stock.width).add(this.toolDiameter);
 
           this.addCommand(G0, X(), F(this.cuttingFeedRate));
 
           xPasses++;
         } else {
-          this.xPosition = Big(this.stock.width).add(this.toolDiameter);
+          this.xPosition = new Decimal(this.stock.width).add(this.toolDiameter);
 
           this.addCommand(G0, X(), F(this.travelFeedRate));
         }
       }
 
-      this.zPosition = Big(5);
+      this.zPosition = new Decimal(5);
 
       this.addCommand(G0, Z(), F(this.plungeFeedRate));
 
