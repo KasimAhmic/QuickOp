@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js';
-import { Operation, OperationProps } from './operation';
-import { OperationUtil } from './util/operation-util';
+import { Operation, OperationProps } from '../operation';
+import { OperationUtil } from '../util';
 
 export interface FacingOperationProps extends OperationProps {
   zPasses: number;

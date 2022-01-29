@@ -58,7 +58,6 @@
     }
   },
   "lint-staged": {
-    "src/**/*.+(js|json|ts|tsx)": "eslint",
     "src/**/*.+(js,css,md,ts,tsx)": "prettier --write"
   }
 }

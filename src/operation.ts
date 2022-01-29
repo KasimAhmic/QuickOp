@@ -1,7 +1,6 @@
 import Decimal from 'decimal.js';
 import { createWriteStream } from 'fs';
-import { Timer } from './util/timer';
-import { Logger } from './logger';
+import { Timer, Logger } from './util';
 import { Stock } from './stock';
 
 export interface OperationProps {
