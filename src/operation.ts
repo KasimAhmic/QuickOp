@@ -36,7 +36,7 @@ export abstract class Operation<PropsType extends OperationProps> {
   protected readonly travelFeedRate: number;
   protected readonly plungeFeedRate: number;
   protected readonly leadInFeedRate: number;
-  readonly precision: number;
+  protected readonly precision: number;
 
   xPosition: Decimal;
   yPosition: Decimal;
@@ -56,7 +56,7 @@ export abstract class Operation<PropsType extends OperationProps> {
     this.travelFeedRate = props.travelFeedRate;
     this.plungeFeedRate = props.plungeFeedRate;
     this.leadInFeedRate = props.leadInFeedRate;
-    this.precision = props.precision || 5;
+    this.precision = props.precision || 3;
 
     this.xPosition = new Decimal(0);
     this.yPosition = new Decimal(0);
@@ -103,26 +103,8 @@ export abstract class Operation<PropsType extends OperationProps> {
     this.stats.commentCount++;
   }
 
-  calculateStats(): Operation<PropsType> {
-    this.stats.totalLines = this.gcode.length;
-    this.stats.sizeInBytes = Buffer.byteLength(this.gcode.join('\n'));
-    this.stats.sizeInKiloBytes = this.stats.sizeInBytes / 1024;
-    this.stats.sizeInMegaBytes = this.stats.sizeInKiloBytes / 1024;
-
-    this.logger.table(
-      ['Description', 'Value'],
-      ['Lines of GCODE', this.stats.totalLines],
-      ['Total Commands', this.stats.commandCount],
-      ['Total Comments', this.stats.commentCount],
-      ['Size in Bytes', this.stats.sizeInBytes],
-      ['Size in Kilobytes', this.stats.sizeInKiloBytes.toFixed(2)],
-      ['Size in Megabytes', this.stats.sizeInMegaBytes.toFixed(2)],
-      ['Time to Generate (sec)', this.stats.generationTimer.elapsedSeconds().toFixed(3)],
-      ['Time to Validate (sec)', this.stats.validationTimer.elapsedSeconds().toFixed(3)],
-      ['Time to Write to Disk (sec)', this.stats.diskWriteTimer.elapsedSeconds().toFixed(3)],
-    );
-
-    return this;
+  getPrecision(): number {
+    return this.precision;
   }
 
   validateGcode(): Operation<PropsType> {
@@ -169,6 +151,28 @@ export abstract class Operation<PropsType extends OperationProps> {
     this.stats.diskWriteTimer.end();
 
     this.logger.log(`GCODE file '${fileNameWithExtension}' saved.`);
+
+    return this;
+  }
+
+  calculateStats(): Operation<PropsType> {
+    this.stats.totalLines = this.gcode.length;
+    this.stats.sizeInBytes = Buffer.byteLength(this.gcode.join('\n'));
+    this.stats.sizeInKiloBytes = this.stats.sizeInBytes / 1024;
+    this.stats.sizeInMegaBytes = this.stats.sizeInKiloBytes / 1024;
+
+    this.logger.table(
+      ['Description', 'Value'],
+      ['Lines of GCODE', this.stats.totalLines],
+      ['Total Commands', this.stats.commandCount],
+      ['Total Comments', this.stats.commentCount],
+      ['Size in Bytes', this.stats.sizeInBytes],
+      ['Size in Kilobytes', this.stats.sizeInKiloBytes.toFixed(2)],
+      ['Size in Megabytes', this.stats.sizeInMegaBytes.toFixed(2)],
+      ['Time to Generate (sec)', this.stats.generationTimer.elapsedSeconds().toFixed(3)],
+      ['Time to Validate (sec)', this.stats.validationTimer.elapsedSeconds().toFixed(3)],
+      ['Time to Write to Disk (sec)', this.stats.diskWriteTimer.elapsedSeconds().toFixed(3)],
+    );
 
     return this;
   }
