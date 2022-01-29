@@ -4,13 +4,13 @@
 
 <div align="center">
 
-![GitHub](https://img.shields.io/github/license/KasimAhmic/QuickOp)
-![GitHub Issues](https://img.shields.io/github/issues/KasimAhmic/QuickOp)
-![GitHub Pull Requests](https://img.shields.io/github/issues-pr/KasimAhmic/QuickOp)
-![GitHub Commit Activity](https://img.shields.io/github/commit-activity/w/KasimAhmic/QuickOp)
+[![License: AGPL-3.0](https://img.shields.io/github/license/KasimAhmic/QuickOp)](https://github.com/KasimAhmic/QuickOp/blob/main/LICENSE)
+[![QuickOp Issues](https://img.shields.io/github/issues/KasimAhmic/QuickOp)](https://github.com/KasimAhmic/QuickOp/issues)
+[![QuickOp Pull Requests](https://img.shields.io/github/issues-pr/KasimAhmic/QuickOp)](https://github.com/KasimAhmic/QuickOp/pulls)
+[![QuickOp Commit Activity](https://img.shields.io/github/commit-activity/w/KasimAhmic/QuickOp)](https://github.com/KasimAhmic/QuickOp/commits/main)
 <br />
-![Code Style](https://camo.githubusercontent.com/bd4532f32ea59bf1b368dfec6e9a1c10210725a43e36a9e38162c051f40f79df/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636f64655f7374796c652d70726574746965722d6666363962342e7376673f7374796c653d666c6174)
-![Speed](https://camo.githubusercontent.com/09b96df632db46ec86a2d277286536f2c5b622964b49624c7f0863e6c0c2281a/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f73706565642d626c617a696e672532302546302539462539342541352d627269676874677265656e2e7376673f7374796c653d666c61742d737175617265)
+[![Code Style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![Speed: Blazing](https://img.shields.io/badge/speed-blazing%20%F0%9F%94%A5-brightgreen.svg)](https://twitter.com/acdlite/status/974390255393505280)
 
 </div>
 
