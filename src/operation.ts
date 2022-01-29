@@ -1,5 +1,6 @@
-import Big from 'big.js';
+import Decimal from 'decimal.js';
 import { createWriteStream } from 'fs';
+import { Timer } from './util/timer';
 import { Logger } from './logger';
 import { Stock } from './stock';
 
@@ -12,6 +13,7 @@ export interface OperationProps {
   travelFeedRate: number;
   plungeFeedRate: number;
   leadInFeedRate: number;
+  precision?: number;
 }
 
 export interface Stats {
@@ -21,9 +23,9 @@ export interface Stats {
   sizeInBytes: number;
   sizeInKiloBytes: number;
   sizeInMegaBytes: number;
-  startTime: bigint;
-  endTime: bigint;
-  elapsedTime: number;
+  generationTimer: Timer;
+  validationTimer: Timer;
+  diskWriteTimer: Timer;
 }
 
 export abstract class Operation<PropsType extends OperationProps> {
@@ -34,10 +36,11 @@ export abstract class Operation<PropsType extends OperationProps> {
   protected readonly travelFeedRate: number;
   protected readonly plungeFeedRate: number;
   protected readonly leadInFeedRate: number;
+  readonly precision: number;
 
-  xPosition: Big;
-  yPosition: Big;
-  zPosition: Big;
+  xPosition: Decimal;
+  yPosition: Decimal;
+  zPosition: Decimal;
 
   gcode: string[];
   stock: Stock;
@@ -53,10 +56,11 @@ export abstract class Operation<PropsType extends OperationProps> {
     this.travelFeedRate = props.travelFeedRate;
     this.plungeFeedRate = props.plungeFeedRate;
     this.leadInFeedRate = props.leadInFeedRate;
+    this.precision = props.precision || 5;
 
-    this.xPosition = Big(0);
-    this.yPosition = Big(0);
-    this.zPosition = Big(0);
+    this.xPosition = new Decimal(0);
+    this.yPosition = new Decimal(0);
+    this.zPosition = new Decimal(0);
 
     this.gcode = [];
     this.stock = props.stock;
@@ -69,20 +73,22 @@ export abstract class Operation<PropsType extends OperationProps> {
       sizeInBytes: 0,
       sizeInKiloBytes: 0,
       sizeInMegaBytes: 0,
-      startTime: 0n,
-      endTime: 0n,
-      elapsedTime: 0,
+      generationTimer: new Timer(),
+      validationTimer: new Timer(),
+      diskWriteTimer: new Timer(),
     };
   }
 
   protected abstract generator(): Operation<OperationProps>;
 
   generate(): Operation<PropsType> {
-    this.stats.startTime = process.hrtime.bigint();
+    this.stats.generationTimer.start();
 
     this.generator();
 
-    this.stats.endTime = process.hrtime.bigint();
+    this.stats.generationTimer.end();
+
+    this.validateGcode();
 
     return this;
   }
@@ -102,7 +108,6 @@ export abstract class Operation<PropsType extends OperationProps> {
     this.stats.sizeInBytes = Buffer.byteLength(this.gcode.join('\n'));
     this.stats.sizeInKiloBytes = this.stats.sizeInBytes / 1024;
     this.stats.sizeInMegaBytes = this.stats.sizeInKiloBytes / 1024;
-    this.stats.elapsedTime = Number(this.stats.endTime - this.stats.startTime) / 1e9;
 
     this.logger.table(
       ['Description', 'Value'],
@@ -112,13 +117,39 @@ export abstract class Operation<PropsType extends OperationProps> {
       ['Size in Bytes', this.stats.sizeInBytes],
       ['Size in Kilobytes', this.stats.sizeInKiloBytes.toFixed(2)],
       ['Size in Megabytes', this.stats.sizeInMegaBytes.toFixed(2)],
-      ['Elapsed Time (sec)', this.stats.elapsedTime.toFixed(3)],
+      ['Time to Generate (sec)', this.stats.generationTimer.elapsedSeconds().toFixed(3)],
+      ['Time to Validate (sec)', this.stats.validationTimer.elapsedSeconds().toFixed(3)],
+      ['Time to Write to Disk (sec)', this.stats.diskWriteTimer.elapsedSeconds().toFixed(3)],
     );
 
     return this;
   }
 
+  validateGcode(): Operation<PropsType> {
+    this.stats.validationTimer.start();
+
+    let problematicLines = 0;
+
+    for (let i = 0; i < this.gcode.length; i++) {
+      if (!this.gcode[i].startsWith(';') && this.gcode[i].includes('e')) {
+        problematicLines++;
+      }
+    }
+
+    this.stats.validationTimer.end();
+
+    if (problematicLines > 0) {
+      this.logger.warn('GCODE contains exponential notation. This will likley not run correctly.');
+    } else {
+      this.logger.log('GCODE contains no exponential notation.');
+    }
+
+    return this;
+  }
+
   writeToFile(fileName: string): Operation<PropsType> {
+    this.stats.diskWriteTimer.start();
+
     let fileNameWithExtension = fileName;
 
     if (!fileNameWithExtension.endsWith('.gcode')) {
@@ -135,7 +166,9 @@ export abstract class Operation<PropsType extends OperationProps> {
 
     writeStream.close();
 
-    this.logger.log(`GCODE file '${fileNameWithExtension}' saved`);
+    this.stats.diskWriteTimer.end();
+
+    this.logger.log(`GCODE file '${fileNameWithExtension}' saved.`);
 
     return this;
   }
