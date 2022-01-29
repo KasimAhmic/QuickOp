@@ -18,7 +18,7 @@ export class TwoDAdaptive extends Operation<TwoDAdaptiveProps> {
   // fused in my mind with a 2D adaptive... Need to come back around
   // and fix this as it is currently useless.
   generate(): TwoDAdaptive {
-    this.logger.error('This GCODE is broken');
+    throw new Error('Broken af. DO NOT USE.');
 
     const { G0 } = Codes;
 
@@ -65,8 +65,6 @@ export class TwoDAdaptive extends Operation<TwoDAdaptiveProps> {
         temp++;
       }
     }
-
-    this.logger.error('This GCODE is broken');
 
     return this;
   }
