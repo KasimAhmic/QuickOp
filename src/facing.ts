@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js';
 import { Operation, OperationProps } from './operation';
-import { setup } from './util';
+import { OperationUtil } from './util/operation-util';
 
 export interface FacingOperationProps extends OperationProps {
   zPasses: number;
@@ -21,7 +21,7 @@ export class FacingOperation extends Operation<FacingOperationProps> {
   protected generator(): FacingOperation {
     this.logger.log('Generating Facing GCODE...');
 
-    const { G0, X, Y, Z, F } = setup(this);
+    const { G0, X, Y, Z, F } = OperationUtil.setup(this);
 
     this.addComment('Starting Facing Operation');
 
