@@ -42,6 +42,7 @@ QuickOp is still a WIP and as such the methods for running the operation generat
 ```bash
 yarn facing
 yarn spiral-facing
+yarn polygon
 ```
 
 In the near future, I hope to make a simple CLI script that will read a config file and run the operations for you. In the farther future, I will be making a UI where you can key in the data and MAYBE even have a GCODE preview. Only time will tell.
