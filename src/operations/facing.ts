@@ -79,7 +79,7 @@ export class FacingOperation extends Operation<FacingOperationProps> {
   }
 }
 
-const t = new FacingOperation({
+const op = new FacingOperation({
   stock: {
     width: 100,
     height: 10,
@@ -96,4 +96,4 @@ const t = new FacingOperation({
   cutBothWays: true,
 });
 
-t.generate().calculateStats().writeToFile('facing');
+op.generate().calculateStats().writeToFile('facing');

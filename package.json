@@ -9,8 +9,9 @@
   "private": true,
   "scripts": {
     "pre-commit": "lint-staged",
-    "facing": "ts-node src/facing.ts",
-    "spiral-facing": "ts-node src/spiral-facing.ts"
+    "facing": "ts-node src/operations/facing.ts",
+    "spiral-facing": "ts-node src/operations/spiral-facing.ts",
+    "polygon": "ts-node src/general/polygon.ts"
   },
   "dependencies": {
     "big.js": "6.1.1",
