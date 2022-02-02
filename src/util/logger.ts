@@ -40,34 +40,15 @@ export class Logger {
       Object.keys(this.colors).forEach((color: Color) => (this.colors[color] = ''));
     }
 
-    switch (logLevel) {
-      case 'LOG':
-        this.debug = this.noop;
-        break;
-      case 'WARN':
-        this.debug = this.noop;
-        this.log = this.noop;
-        this.table = this.noop;
-        break;
-      case 'ERROR':
-        this.debug = this.noop;
-        this.log = this.noop;
-        this.table = this.noop;
-        this.warn = this.noop;
-        break;
-      case 'NONE':
-        this.debug = this.noop;
-        this.log = this.noop;
-        this.table = this.noop;
-        this.warn = this.noop;
-        this.error = this.noop;
-        break;
-    }
+    if (['LOG', 'WARN', 'ERROR', 'NONE'].includes(logLevel)) this.debug = this.noop;
+    if (['WARN', 'ERROR', 'NONE'].includes(logLevel)) this.log = this.noop;
+    if (['ERROR', 'NONE'].includes(logLevel)) this.warn = this.noop;
+    if (['NONE'].includes(logLevel)) this.error = this.noop;
   }
 
   private write(logLevel: LogLevel, msg: Message, color: Color) {
     // Application name
-    const quickOp = `${this.colors.green}[QuickOp]${this.colors.reset}`;
+    const quickOp = `${this.colors[color]}[QuickOp]${this.colors.reset}`;
 
     // Current date and time
     const date = new Date().toLocaleString();
@@ -114,14 +95,14 @@ export class Logger {
     const header = `${tableHeaders.map((header) => header.toString().padEnd(columnSize)).join(' | ')}`;
     const rows = tableRows.map((row) => row.map((cell) => cell.toString().padEnd(columnSize)).join(' | '));
 
-    this.write('LOG', ` ${tableBorder} `, 'green');
-    this.write('LOG', `| ${header} |`, 'green');
-    this.write('LOG', `| ${headerSeparator} |`, 'green');
+    this.log(` ${tableBorder} `);
+    this.log(`| ${header} |`);
+    this.log(`| ${headerSeparator} |`);
 
     for (const row of rows) {
-      this.write('LOG', `| ${row} |`, 'green');
+      this.log(`| ${row} |`);
     }
 
-    this.write('LOG', ` ${tableBorder} `, 'green');
+    this.log(` ${tableBorder} `);
   }
 }
