@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./quick-op.svg" width="650" height="auto" />
+  <img src="./quick-op.svg" width="650" height="auto" alt='QuickOp Logo' />
 </div>
 
 <div align="center">
