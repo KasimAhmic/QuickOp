@@ -1,12 +1,9 @@
 export interface TimerResult {
-  startTime: bigint;
-  endTime: bigint;
+  startTime: number;
+  endTime: number;
 }
 
 export class Timer {
-  private static readonly NS_IN_MS = 1e6;
-  private static readonly NS_IN_SEC = 1e9;
-
   results: Record<number, TimerResult>;
 
   constructor() {
@@ -15,32 +12,32 @@ export class Timer {
 
   start(id: number): Timer {
     this.results[id] = {
-      startTime: process.hrtime.bigint(),
-      endTime: 0n,
+      startTime: performance.now(),
+      endTime: 0,
     };
 
     return this;
   }
 
   end(id: number): Timer {
-    this.results[id].endTime = process.hrtime.bigint();
+    this.results[id].endTime = performance.now();
 
     return this;
   }
 
   getResult(id: number): TimerResult {
-    return this.results[id] || { startTime: 0n, endTime: 0n };
+    return this.results[id] || { startTime: 0, endTime: 0 };
   }
 
   elapsedMilliseconds(id: number): number {
     const { startTime, endTime } = this.getResult(id);
 
-    return Number(endTime - startTime) / Timer.NS_IN_MS;
+    return endTime - startTime;
   }
 
   elapsedSeconds(id: number): number {
     const { startTime, endTime } = this.getResult(id);
 
-    return Number(endTime - startTime) / Timer.NS_IN_SEC;
+    return (endTime - startTime) / 1000;
   }
 }
