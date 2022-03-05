@@ -1,32 +1,46 @@
+export interface TimerResult {
+  startTime: bigint;
+  endTime: bigint;
+}
+
 export class Timer {
   private static readonly NS_IN_MS = 1e6;
   private static readonly NS_IN_SEC = 1e9;
 
-  private startTime: bigint;
-  private endTime: bigint;
+  results: Record<number, TimerResult>;
 
   constructor() {
-    this.startTime = 0n;
-    this.endTime = 0n;
+    this.results = {};
   }
 
-  start(): Timer {
-    this.startTime = process.hrtime.bigint();
+  start(id: number): Timer {
+    this.results[id] = {
+      startTime: process.hrtime.bigint(),
+      endTime: 0n,
+    };
 
     return this;
   }
 
-  end(): Timer {
-    this.endTime = process.hrtime.bigint();
+  end(id: number): Timer {
+    this.results[id].endTime = process.hrtime.bigint();
 
     return this;
   }
 
-  elapsedMilliseconds(): number {
-    return Number(this.endTime - this.startTime) / Timer.NS_IN_MS;
+  getResult(id: number): TimerResult {
+    return this.results[id] || { startTime: 0n, endTime: 0n };
   }
 
-  elapsedSeconds(): number {
-    return Number(this.endTime - this.startTime) / Timer.NS_IN_SEC;
+  elapsedMilliseconds(id: number): number {
+    const { startTime, endTime } = this.getResult(id);
+
+    return Number(endTime - startTime) / Timer.NS_IN_MS;
+  }
+
+  elapsedSeconds(id: number): number {
+    const { startTime, endTime } = this.getResult(id);
+
+    return Number(endTime - startTime) / Timer.NS_IN_SEC;
   }
 }
