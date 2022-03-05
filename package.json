@@ -14,7 +14,6 @@
     "polygon": "ts-node src/general/polygon.ts"
   },
   "dependencies": {
-    "big.js": "6.1.1",
     "decimal.js": "^10.3.1"
   },
   "devDependencies": {
