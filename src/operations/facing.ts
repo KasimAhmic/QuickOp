@@ -69,9 +69,9 @@ export class FacingOperation extends Operation<FacingOperationProps> {
       this.zPosition = new Decimal(5);
 
       this.addCommand(G0, Z(), F(this.plungeFeedRate));
-
-      this.addComment('Facing Operation Complete');
     }
+
+    this.addComment('Facing Operation Complete');
 
     this.logger.log('Finished generating Facing GCODE!');
 
@@ -96,4 +96,4 @@ const op = new FacingOperation({
   cutBothWays: true,
 });
 
-op.generate().calculateStats().writeToFile('facing');
+op.generate().writeToFile('facing').calculateStats();
