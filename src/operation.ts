@@ -22,9 +22,12 @@ export interface Stats {
   sizeInBytes: number;
   sizeInKiloBytes: number;
   sizeInMegaBytes: number;
-  generationTimer: Timer;
-  validationTimer: Timer;
-  diskWriteTimer: Timer;
+}
+
+enum Phase {
+  GCODE_GENERATION,
+  GCODE_VALIDATION,
+  DISK_WRITE,
 }
 
 export abstract class Operation<PropsType extends OperationProps> {
@@ -46,8 +49,9 @@ export abstract class Operation<PropsType extends OperationProps> {
   logger: Logger;
 
   stats: Stats;
+  timer: Timer;
 
-  constructor(props: PropsType, loggerName?: string) {
+  protected constructor(props: PropsType, loggerName?: string) {
     this.widthOfCut = props.widthOfCut;
     this.depthOfCut = props.depthOfCut;
     this.toolDiameter = props.toolDiameter;
@@ -72,20 +76,19 @@ export abstract class Operation<PropsType extends OperationProps> {
       sizeInBytes: 0,
       sizeInKiloBytes: 0,
       sizeInMegaBytes: 0,
-      generationTimer: new Timer(),
-      validationTimer: new Timer(),
-      diskWriteTimer: new Timer(),
     };
+
+    this.timer = new Timer();
   }
 
   protected abstract generator(): Operation<OperationProps>;
 
   generate(): Operation<PropsType> {
-    this.stats.generationTimer.start();
+    this.timer.start(Phase.GCODE_GENERATION);
 
     this.generator();
 
-    this.stats.generationTimer.end();
+    this.timer.end(Phase.GCODE_GENERATION);
 
     this.validateGcode();
 
@@ -107,7 +110,7 @@ export abstract class Operation<PropsType extends OperationProps> {
   }
 
   validateGcode(): Operation<PropsType> {
-    this.stats.validationTimer.start();
+    this.timer.start(Phase.GCODE_VALIDATION);
 
     let problematicLines = 0;
 
@@ -117,10 +120,10 @@ export abstract class Operation<PropsType extends OperationProps> {
       }
     }
 
-    this.stats.validationTimer.end();
+    this.timer.end(Phase.GCODE_VALIDATION);
 
     if (problematicLines > 0) {
-      this.logger.warn('GCODE contains exponential notation. This will likley not run correctly.');
+      this.logger.warn('GCODE contains exponential notation. This will likely not run correctly.');
     } else {
       this.logger.log('GCODE contains no exponential notation.');
     }
@@ -129,7 +132,7 @@ export abstract class Operation<PropsType extends OperationProps> {
   }
 
   writeToFile(fileName: string): Operation<PropsType> {
-    this.stats.diskWriteTimer.start();
+    this.timer.start(Phase.DISK_WRITE);
 
     let fileNameWithExtension = fileName;
 
@@ -147,7 +150,7 @@ export abstract class Operation<PropsType extends OperationProps> {
 
     writeStream.close();
 
-    this.stats.diskWriteTimer.end();
+    this.timer.end(Phase.DISK_WRITE);
 
     this.logger.log(`GCODE file '${fileNameWithExtension}' saved.`);
 
@@ -168,9 +171,9 @@ export abstract class Operation<PropsType extends OperationProps> {
       ['Size in Bytes', this.stats.sizeInBytes],
       ['Size in Kilobytes', this.stats.sizeInKiloBytes.toFixed(2)],
       ['Size in Megabytes', this.stats.sizeInMegaBytes.toFixed(2)],
-      ['Time to Generate (sec)', this.stats.generationTimer.elapsedSeconds().toFixed(3)],
-      ['Time to Validate (sec)', this.stats.validationTimer.elapsedSeconds().toFixed(3)],
-      ['Time to Write to Disk (sec)', this.stats.diskWriteTimer.elapsedSeconds().toFixed(3)],
+      ['Time to Generate (sec)', this.timer.elapsedSeconds(Phase.GCODE_GENERATION).toFixed(3)],
+      ['Time to Validate (sec)', this.timer.elapsedSeconds(Phase.GCODE_VALIDATION).toFixed(3)],
+      ['Time to Write to Disk (sec)', this.timer.elapsedSeconds(Phase.DISK_WRITE).toFixed(3)],
     );
 
     return this;
