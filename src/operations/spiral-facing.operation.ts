@@ -27,7 +27,7 @@ export class SpiralFacingOperation extends Operation<SpiralFacingOperationProps>
   protected generator(): SpiralFacingOperation {
     this.logger.log('Generating Spiral Facing GCODE...');
 
-    const { G0, X, Y, Z, F } = OperationUtil.setup(this);
+    const { G0, X, Y, F } = OperationUtil.setup(this);
 
     this.addComment('Starting Spiral Facing Operation');
 
