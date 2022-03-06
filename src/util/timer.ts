@@ -4,13 +4,13 @@ export interface TimerResult {
 }
 
 export class Timer {
-  results: Record<number, TimerResult>;
+  results: Record<string, TimerResult>;
 
   constructor() {
     this.results = {};
   }
 
-  start(id: number): Timer {
+  start(id: string): Timer {
     this.results[id] = {
       startTime: performance.now(),
       endTime: 0,
@@ -19,23 +19,23 @@ export class Timer {
     return this;
   }
 
-  end(id: number): Timer {
+  end(id: string): Timer {
     this.results[id].endTime = performance.now();
 
     return this;
   }
 
-  getResult(id: number): TimerResult {
+  getResult(id: string): TimerResult {
     return this.results[id] || { startTime: 0, endTime: 0 };
   }
 
-  elapsedMilliseconds(id: number): number {
+  elapsedMilliseconds(id: string): number {
     const { startTime, endTime } = this.getResult(id);
 
     return endTime - startTime;
   }
 
-  elapsedSeconds(id: number): number {
+  elapsedSeconds(id: string): number {
     const { startTime, endTime } = this.getResult(id);
 
     return (endTime - startTime) / 1000;

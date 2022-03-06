@@ -1,5 +1,5 @@
 import { Operation, OperationProps } from '../operation';
-import { X, Y, Z, F, Codes } from '../util/operation-util';
+import { X, Y, Z, F, Codes } from '../util/operation.util';
 
 export interface TwoDAdaptiveProps extends OperationProps {
   zPasses: number;

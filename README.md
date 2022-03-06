@@ -37,7 +37,7 @@ yarn
 
 ## Running
 
-QuickOp is still a WIP and as such the methods for running the operation generators will change drastically over time. At present, the only two generators that can be run are Facing and Spiral Facing. You can run them by tweaking the parameters in the `src/operations/facing.ts` and `src/operations/spiral-facing.ts` files respectively and then running the commands below for the operation you want.
+QuickOp is still a WIP and as such the methods for running the operation generators will change drastically over time. At present, the only two generators that can be run are Facing and Spiral Facing. You can run them by tweaking the parameters in the `src/operations/facing.operation.ts` and `src/operations/spiral-facing.operation.ts` files respectively and then running the commands below for the operation you want.
 
 ```bash
 yarn facing
