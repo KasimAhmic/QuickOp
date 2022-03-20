@@ -32,7 +32,8 @@ export class FacingOperation extends Operation<FacingOperationProps> {
       this.yPosition = new Decimal(-this.toolDiameter);
       this.zPosition = new Decimal(5);
 
-      this.addCommand(G0, X(), Y(), Z(), F(this.travelFeedRate));
+      this.addCommand(G0, Z(), F(this.plungeFeedRate));
+      this.addCommand(G0, X(), Y(), F(this.travelFeedRate));
 
       this.zPosition = new Decimal(-this.depthOfCut).mul(zPass);
 
