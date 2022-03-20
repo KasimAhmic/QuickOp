@@ -8,15 +8,15 @@ export interface PolygonProps extends OperationProps {
   zPasses: number;
 }
 
-export class Polygon extends Operation<PolygonProps> {
+export class PolygonOperation extends Operation<PolygonProps> {
   private readonly numberOfSides: number;
   private readonly sideLength: number;
   private readonly zPasses: number;
 
   constructor(props: PolygonProps) {
-    super(props, Polygon.name);
+    super(props, PolygonOperation.name);
 
-    this.logger.warn('This opreation is still a WIP. It may not work as expected.');
+    this.logger.warn('This operation is still a WIP. It may not work as expected.');
 
     this.numberOfSides = props.numberOfSides;
     this.sideLength = props.sideLength;
@@ -27,7 +27,7 @@ export class Polygon extends Operation<PolygonProps> {
     return degrees.mul(Math.PI).div(180);
   }
 
-  protected generator(): Polygon {
+  protected generator(): PolygonOperation {
     const { G0, X, Y, Z, F } = OperationUtil.setup(this);
 
     this.zPosition = new Decimal(5);
@@ -84,7 +84,7 @@ export class Polygon extends Operation<PolygonProps> {
   }
 }
 
-const op = new Polygon({
+const op = new PolygonOperation({
   numberOfSides: 6,
   sideLength: 20,
   widthOfCut: 1,
@@ -102,4 +102,4 @@ const op = new Polygon({
   leadInFeedRate: 100,
 });
 
-op.generate().writeToFile('polygon.gcode');
+op.generate().writeToFile('polygon.gcode').calculateStats();
