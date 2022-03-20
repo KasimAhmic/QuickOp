@@ -37,7 +37,7 @@ yarn
 
 ## Running
 
-QuickOp is still a WIP and as such the methods for running the operation generators will change drastically over time. At present, the only two generators that can be run are Facing and Spiral Facing. You can run them by tweaking the parameters in the `src/operations/facing.operation.ts` and `src/operations/spiral-facing.operation.ts` files respectively and then running the commands below for the operation you want.
+QuickOp is still a WIP and as such the methods for running the operation generators will change drastically over time. At present, the only generators that can be run are the ones below. You can tweak the parameters in their respective *.operation.ts files and run the commands below.
 
 ```bash
 yarn facing
@@ -45,11 +45,11 @@ yarn spiral-facing
 yarn polygon
 ```
 
-In the near future, I hope to make a simple CLI script that will read a config file and run the operations for you. In the farther future, I will be making a UI where you can key in the data and MAYBE even have a GCODE preview. Only time will tell.
+In the near future, I hope to make a simple CLI script that will read a config file and run the operations for you. In the farther future, I will be making a UI where you can key in the data and MAYBE even have a GCODE preview.
 
 ## Contributing
 
-Code quality and code formatting are taken very seriously. Prettier is used to format all the code in the project before each commit and I highly suggest you configure your editor to auto format on save. The `.vscode` folder contains some general settings that _should_ do this for you if you're running VS Code. The project is also configured to use Conventional Commits and Commit Lint to format all commit messages.
+Code quality and code formatting are taken very seriously. Prettier is used to format all the code in the project before each commit, and I highly suggest you configure your editor to auto format on save. The `.vscode` folder contains some general settings that _should_ do this for you if you're running VS Code. The project is also configured to use Conventional Commits and Commit Lint to format all commit messages.
 
 Some rules of thumb when contributing:
 
