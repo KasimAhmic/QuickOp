@@ -1,4 +1,5 @@
 import { Operation, OperationProps } from '../operation';
+import Decimal from 'decimal.js';
 
 export class OperationUtil {
   static Codes = {
@@ -8,9 +9,9 @@ export class OperationUtil {
 
   static setup(operation: Operation<OperationProps>) {
     return {
-      X: () => `X${operation.xPosition.toFixed(operation.getPrecision())}`,
-      Y: () => `Y${operation.yPosition.toFixed(operation.getPrecision())}`,
-      Z: () => `Z${operation.zPosition.toFixed(operation.getPrecision())}`,
+      X: (xPosition?: Decimal) => `X${xPosition ?? operation.xPosition.toFixed(operation.getPrecision())}`,
+      Y: (yPosition?: Decimal) => `Y${yPosition ?? operation.yPosition.toFixed(operation.getPrecision())}`,
+      Z: (zPosition?: Decimal) => `Z${zPosition ?? operation.zPosition.toFixed(operation.getPrecision())}`,
       F: (feedrate: number) => `F${feedrate}`,
       ...OperationUtil.Codes,
     };
