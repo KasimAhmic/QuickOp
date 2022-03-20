@@ -14,7 +14,7 @@ export class SpiralFacingOperation extends Operation<SpiralFacingOperationProps>
   constructor(props: SpiralFacingOperationProps) {
     super(props, SpiralFacingOperation.name);
 
-    this.logger.warn('This opreation is still a WIP. It may not work as expected.');
+    this.logger.warn('This operation is still a WIP. It may not work as expected.');
 
     if (props.stock.width !== props.stock.depth) {
       throw new Error('Stock width and depth must be equal');
