@@ -99,18 +99,25 @@ export class Logger {
    * @param tableRows
    */
   table(tableHeaders: TableHeaders, ...tableRows: TableRows) {
-    const headerSizes = tableHeaders.map((header) => header.toString().length);
-    let cellSizes: number[] = [];
+    const columnSizes = tableHeaders.map((header: string | number) => {
+      return tableRows.reduce((longest: number, row: (string | number)[]) => {
+        const length = row[tableHeaders.indexOf(header)]?.toString()?.length ?? null;
 
-    tableRows.forEach((row) => (cellSizes = cellSizes.concat(row.map((cell) => cell.toString().length))));
+        if (!Boolean(length)) return header.toString().length;
 
-    const columnSize = Math.max(...headerSizes, ...cellSizes);
+        return length > longest ? length : longest;
+      }, 0);
+    });
 
-    const tableBorder = tableHeaders.map(() => '-'.repeat(columnSize + 2)).join(' ');
-    const headerSeparator = tableHeaders.map(() => '-'.repeat(columnSize)).join(' | ');
+    const tableBorder = tableHeaders.map((_, index) => '-'.repeat(columnSizes[index] + 2)).join(' ');
+    const headerSeparator = tableHeaders.map((_, index) => '-'.repeat(columnSizes[index])).join(' | ');
 
-    const header = `${tableHeaders.map((header) => header.toString().padEnd(columnSize)).join(' | ')}`;
-    const rows = tableRows.map((row) => row.map((cell) => cell.toString().padEnd(columnSize)).join(' | '));
+    const header = `${tableHeaders
+      .map((header, index) => header.toString().padEnd(columnSizes[index]))
+      .join(' | ')}`;
+    const rows = tableRows.map((row) =>
+      row.map((cell, index) => cell.toString().padEnd(columnSizes[index])).join(' | '),
+    );
 
     this.log(` ${tableBorder} `);
     this.log(`| ${header} |`);
@@ -177,7 +184,3 @@ export class Logger {
     return value.length < 2 ? '0' + value : value;
   }
 }
-
-const logger = new Logger('test');
-
-logger.log('teset');
