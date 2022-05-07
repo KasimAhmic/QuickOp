@@ -40,9 +40,9 @@ yarn
 QuickOp is still a WIP and as such the methods for running the operation generators will change drastically over time. At present, the only generators that can be run are the ones below. You can tweak the parameters in their respective *.operation.ts files and run the commands below.
 
 ```bash
-yarn facing
-yarn spiral-facing
-yarn polygon
+yarn start -- src/operations/facing.operation.ts
+yarn start -- src/operations/spiral-facing.operation.ts
+yarn start -- src/operations/polygon.operation.ts
 ```
 
 In the near future, I hope to make a simple CLI script that will read a config file and run the operations for you. In the farther future, I will be making a UI where you can key in the data and MAYBE even have a GCODE preview.

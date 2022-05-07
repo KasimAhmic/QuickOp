@@ -9,9 +9,7 @@
   "private": true,
   "scripts": {
     "pre-commit": "lint-staged",
-    "facing": "ts-node src/operations/facing.operation.ts",
-    "spiral-facing": "ts-node src/operations/spiral-facing.operation.ts",
-    "polygon": "ts-node src/operations/polygon.operation.ts"
+    "start": "ts-node --project tsconfig.json"
   },
   "dependencies": {
     "decimal.js": "^10.3.1",
